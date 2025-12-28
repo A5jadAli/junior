@@ -1,65 +1,167 @@
-import Image from "next/image";
+"use client";
+
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Github, Code, Zap, CheckCircle } from "lucide-react";
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <div className="flex justify-center mb-6">
+              <div className="p-4 bg-primary rounded-2xl">
+                <Code className="h-12 w-12 text-primary-foreground" />
+              </div>
+            </div>
+            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
+              AI Coding Assistant
+            </h1>
+            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              Your autonomous development partner. Let AI handle the coding
+              while you focus on the big picture.
+            </p>
+          </div>
+
+          {/* Login Card */}
+          <Card className="max-w-md mx-auto mb-16 shadow-xl">
+            <CardHeader>
+              <CardTitle className="text-2xl text-center">
+                Get Started
+              </CardTitle>
+              <CardDescription className="text-center">
+                Sign in with GitHub to access your repositories
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+                className="w-full h-12 text-lg"
+                size="lg"
+              >
+                <Github className="mr-2 h-5 w-5" />
+                Continue with GitHub
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Features */}
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            <Card>
+              <CardHeader>
+                <Zap className="h-8 w-8 text-primary mb-2" />
+                <CardTitle>Autonomous Development</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-600 dark:text-slate-400">
+                  AI agents handle git operations, code generation, testing, and
+                  deployment automatically.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CheckCircle className="h-8 w-8 text-primary mb-2" />
+                <CardTitle>Human Oversight</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Review and approve implementation plans before code is
+                  written. Full control when you need it.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Code className="h-8 w-8 text-primary mb-2" />
+                <CardTitle>Production Ready</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Generated code includes tests, error handling, and follows
+                  your project's conventions.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* How it works */}
+          <div className="text-center">
+            <h2 className="text-3xl font-bold mb-8">How It Works</h2>
+            <div className="grid md:grid-cols-4 gap-6 text-left">
+              <div className="relative">
+                <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold mb-4">
+                  1
+                </div>
+                <h3 className="font-semibold mb-2">Describe Task</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Tell the AI what feature you want to build
+                </p>
+              </div>
+
+              <div className="relative">
+                <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold mb-4">
+                  2
+                </div>
+                <h3 className="font-semibold mb-2">Review Plan</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  AI generates detailed implementation plan for approval
+                </p>
+              </div>
+
+              <div className="relative">
+                <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold mb-4">
+                  3
+                </div>
+                <h3 className="font-semibold mb-2">AI Implements</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Code is written, tested, and pushed to new branch
+                </p>
+              </div>
+
+              <div className="relative">
+                <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center font-bold mb-4">
+                  4
+                </div>
+                <h3 className="font-semibold mb-2">Review & Merge</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Check the results and merge when ready
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }
